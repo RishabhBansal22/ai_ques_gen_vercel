@@ -12,6 +12,9 @@
       --bg: #f8fafc;
       --card: #fff;
       --shadow: 0 4px 24px rgba(30,41,59,0.08);
+      --focus: #facc15;
+      --success: #22c55e;
+      --danger: #ef4444;
     }
     body {
       font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
@@ -20,6 +23,8 @@
       padding: 0;
       color: var(--brand);
       min-height: 100vh;
+      background-image: radial-gradient(circle at 80% 10%, #a5b4fc33 0%, transparent 70%),
+        radial-gradient(circle at 10% 90%, #6366f133 0%, transparent 70%);
     }
     .hero {
       width: 100%;
@@ -32,46 +37,78 @@
       padding: 60px 16px 40px 16px;
       box-sizing: border-box;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 120vw;
+      height: 120vw;
+      background: radial-gradient(circle, #fff3 0%, transparent 70%);
+      transform: translate(-50%, -60%) scale(1.2);
+      z-index: 0;
+      pointer-events: none;
     }
     .brand {
-      font-size: 2.7rem;
-      font-weight: 800;
+      font-size: 2.9rem;
+      font-weight: 900;
       letter-spacing: 2px;
       color: #fff;
       margin-bottom: 12px;
-      text-shadow: 0 2px 16px rgba(30,41,59,0.10);
+      text-shadow: 0 2px 16px rgba(30,41,59,0.13);
+      z-index: 1;
+      animation: fadeInDown 1s cubic-bezier(.77,0,.18,1) 0.1s both;
     }
     .tagline {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       color: #e0e7ff;
       font-weight: 500;
       margin-bottom: 0;
       text-shadow: 0 2px 8px rgba(30,41,59,0.10);
+      z-index: 1;
+      animation: fadeInDown 1s cubic-bezier(.77,0,.18,1) 0.3s both;
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .scroll-down {
       margin-top: 40px;
       color: #fff;
-      font-size: 2rem;
+      font-size: 2.2rem;
       animation: bounce 1.5s infinite;
-      opacity: 0.7;
+      opacity: 0.8;
       cursor: pointer;
       border: none;
       background: none;
+      z-index: 1;
+      transition: color 0.2s;
+    }
+    .scroll-down:hover {
+      color: var(--focus);
     }
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(12px); }
     }
     .container {
-      max-width: 420px;
+      max-width: 440px;
       margin: 0 auto 40px auto;
       background: var(--card);
-      border-radius: 18px;
+      border-radius: 22px;
       box-shadow: var(--shadow);
-      padding: 32px 20px 24px 20px;
+      padding: 38px 24px 28px 24px;
       position: relative;
       top: -40px;
       z-index: 2;
+      animation: fadeInUp 1.1s cubic-bezier(.77,0,.18,1) 0.2s both;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .container h1 {
       display: none;
@@ -82,57 +119,155 @@
       font-weight: 600;
       color: var(--brand);
       letter-spacing: 0.01em;
+      font-size: 1.04rem;
+    }
+    .form-group {
+      margin-bottom: 18px;
+      position: relative;
     }
     input, textarea, select {
       width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 18px;
+      padding: 12px 14px;
+      margin-bottom: 0;
       border: 1.5px solid #e5e7eb;
-      border-radius: 6px;
-      font-size: 1rem;
+      border-radius: 8px;
+      font-size: 1.05rem;
       background: #f1f5f9;
-      transition: border 0.2s;
+      transition: border 0.2s, box-shadow 0.2s;
       font-family: inherit;
+      box-shadow: 0 1px 2px rgba(30,41,59,0.03);
     }
     input:focus, textarea:focus, select:focus {
-      border-color: var(--accent);
+      border-color: var(--focus);
       outline: none;
       background: #fff;
+      box-shadow: 0 0 0 2px #fde68a55;
     }
     button {
       width: 100%;
-      padding: 12px 0;
-      background: var(--accent);
+      padding: 13px 0;
+      background: linear-gradient(90deg, var(--accent-light) 0%, var(--accent) 100%);
       color: #fff;
       border: none;
-      border-radius: 6px;
-      font-size: 1.1rem;
-      font-weight: 700;
+      border-radius: 8px;
+      font-size: 1.13rem;
+      font-weight: 800;
       cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+      box-shadow: 0 2px 8px rgba(99,102,241,0.10);
       margin-bottom: 0;
+      letter-spacing: 0.01em;
+    }
+    button:active {
+      transform: scale(0.98);
     }
     button:disabled {
       background: #c7d2fe;
       cursor: not-allowed;
+      color: #fff;
     }
     .output {
       margin-top: 24px;
       background: #f1f5f9;
-      border-radius: 8px;
-      padding: 18px;
+      border-radius: 10px;
+      padding: 20px 16px;
       min-height: 60px;
-      font-size: 1rem;
+      font-size: 1.04rem;
       color: var(--brand);
       white-space: pre-wrap;
-      box-shadow: 0 1px 4px rgba(30,41,59,0.04);
+      box-shadow: 0 1px 6px rgba(30,41,59,0.06);
+      transition: box-shadow 0.2s;
+      line-height: 1.6;
+      word-break: break-word;
+      border: 1px solid #e0e7ef;
+      position: relative;
+    }
+    .output:empty {
+      min-height: 0;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+    }
+    .output.success {
+      border-color: var(--success);
+      box-shadow: 0 1px 8px #22c55e22;
+    }
+    .output.error {
+      border-color: var(--danger);
+      color: var(--danger);
+      box-shadow: 0 1px 8px #ef444422;
     }
     .loader {
       text-align: center;
       margin-top: 16px;
       color: var(--accent);
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .loader:before {
+      content: '';
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      border: 3px solid #a5b4fc;
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .form-group input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+      accent-color: var(--accent);
+      vertical-align: middle;
+    }
+    .form-group label[for="perSubtopic"] {
+      font-weight: 500;
+      font-size: 0.98rem;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #downloadBtn {
+      margin-top: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #22d3ee 0%, #6366f1 100%);
+      box-shadow: 0 2px 8px #22d3ee22;
+      border: none;
+      border-radius: 8px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    #downloadBtn:active {
+      transform: scale(0.98);
+    }
+    #downloadBtn:disabled {
+      background: #bae6fd;
+      color: #fff;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .form-row > .form-group {
+      flex: 1;
+      margin-bottom: 0;
     }
     @media (max-width: 600px) {
       .container {
@@ -141,10 +276,14 @@
         top: -24px;
       }
       .brand {
-        font-size: 2rem;
+        font-size: 2.1rem;
       }
       .tagline {
-        font-size: 1rem;
+        font-size: 1.01rem;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 0;
       }
     }
     html, body {
@@ -159,24 +298,45 @@
     <button class="scroll-down" onclick="document.getElementById('main-form').scrollIntoView({behavior: 'smooth'});" aria-label="Scroll to form">&#8595;</button>
   </div>
   <div class="container" id="main-form">
-    <form id="questionForm">
-      <label for="topic">Topic</label>
-      <input type="text" id="topic" name="topic" required>
-
-      <label for="subtopic">Subtopic (optional)</label>
-      <input type="text" id="subtopic" name="subtopic">
-
-      <label for="numQuestions">Number of Questions</label>
-      <input type="number" id="numQuestions" name="numQuestions" min="1" max="20" value="5" required>
-
-      <label for="context">Context (optional)</label>
-      <textarea id="context" name="context" rows="3" placeholder="Add any specific context..."></textarea>
-
-      <button type="submit" id="generateBtn">Generate Questions</button>
+    <form id="questionForm" autocomplete="off">
+      <div class="form-group">
+        <label for="topic">Topic <span style="color:var(--danger);">*</span></label>
+        <input type="text" id="topic" name="topic" required placeholder="e.g. Photosynthesis">
+      </div>
+      <div class="form-group">
+        <label for="subtopic">Subtopic <span style="color:#64748b;font-weight:400;">(optional)</span></label>
+        <input type="text" id="subtopic" name="subtopic" placeholder="e.g. Light Reactions">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="difficulty">Difficulty <span style="color:var(--danger);">*</span></label>
+          <select id="difficulty" name="difficulty" required>
+            <option value="">Select difficulty</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="numQuestions"># Questions <span style="color:var(--danger);">*</span></label>
+          <input type="number" id="numQuestions" name="numQuestions" min="1" max="20" value="5" required>
+        </div>
+      </div>
+      <div class="form-group" id="perSubtopicDiv" style="display:none;">
+        <label for="perSubtopic">
+          <input type="checkbox" id="perSubtopic" name="perSubtopic">
+          Number of questions is per subtopic
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="context">Context <span style="color:#64748b;font-weight:400;">(optional)</span></label>
+        <textarea id="context" name="context" rows="3" placeholder="Add any specific context..."></textarea>
+      </div>
+      <button type="submit" id="generateBtn">🎲 Generate Questions</button>
     </form>
     <div class="loader" id="loader" style="display:none;">Generating...</div>
     <div class="output" id="output"></div>
-    <button id="downloadBtn" style="width:100%;margin-top:10px;display:none;">Download Solutions</button>
+    <button id="downloadBtn" style="width:100%;margin-top:10px;display:none;">⬇️ Download Solutions</button>
   </div>
   <script>
     const form = document.getElementById('questionForm');
@@ -194,31 +354,52 @@
 
       // Gather form data
 
+
       const data = {
         topic: form.topic.value.trim(),
         subtopic: form.subtopic.value.trim(),
         num_questions: form.numQuestions.value,
-        context: form.context.value.trim()
+        context: form.context.value.trim(),
+        difficulty: form.difficulty.value,
+        per_subtopic: form.perSubtopic && form.perSubtopic.checked
       };
 
       // Advanced prompt engineering: build a detailed, instruction-rich prompt matching the system prompt
-      let userPrompt = `You are an expert educator and question generator. Generate ${data.num_questions} practice questions`;
-      userPrompt += ` on the topic: "${data.topic}"`;
+
+      let userPrompt = `You are an expert educator and question generator. `;
       if (data.subtopic) {
-        userPrompt += `, focusing also on subtopics: "${data.subtopic}"`;
+        if (data.per_subtopic) {
+          userPrompt += `Generate ${data.num_questions} practice questions for each subtopic on the topic: "${data.topic}", subtopics: "${data.subtopic}"`;
+        } else {
+          userPrompt += `Generate ${data.num_questions} practice questions on the topic: "${data.topic}", focusing also on subtopics: "${data.subtopic}"`;
+        }
+      } else {
+        userPrompt += `Generate ${data.num_questions} practice questions on the topic: "${data.topic}"`;
       }
       userPrompt += ".";
+      if (data.difficulty) {
+        userPrompt += `\nDifficulty: ${data.difficulty}`;
+      }
       if (data.context) {
         userPrompt += `\nContext: ${data.context}`;
       }
       userPrompt += `\nGuidelines:`;
-      userPrompt += `\n- Return questions in a numbered list.`;
+      
       userPrompt += `\n- Questions must be relevant to the provided topic${data.subtopic ? ' and subtopics' : ''}.`;
-      userPrompt += `\n- Match the specified difficulty level (Beginner, Intermediate, Advanced) if provided.`;
-      userPrompt += `\n- Use the context to tailor the questions appropriately.`;
-      userPrompt += `\n- Format the output as a numbered list.`;
-      userPrompt += `\n- Do not repeat questions.`;
-      userPrompt += `\n- Do not provide answers.`;
+      userPrompt += `\n- Match the specified difficulty level (Beginner, Intermediate, Advanced).`;
+      
+      
+    // Show/hide per subtopic checkbox based on subtopic field
+    const subtopicInput = document.getElementById('subtopic');
+    const perSubtopicDiv = document.getElementById('perSubtopicDiv');
+    subtopicInput.addEventListener('input', function() {
+      if (subtopicInput.value.trim()) {
+        perSubtopicDiv.style.display = '';
+      } else {
+        perSubtopicDiv.style.display = 'none';
+        document.getElementById('perSubtopic').checked = false;
+      }
+    });
 
       document.getElementById('downloadBtn').style.display = 'none';
       try {
