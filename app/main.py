@@ -2,8 +2,6 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .generator import generate_response, generate_answers
-
-
 from fastapi.responses import FileResponse
 import tempfile
 import os
@@ -14,7 +12,7 @@ app = FastAPI()
 # Allow frontend to access backend (CORS)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For production, specify your frontend URL
+    allow_origins=["https://ai-ques-gen-vercel.vercel.app"],  # Updated to your Vercel domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
