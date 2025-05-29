@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Practice Question Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --brand: #1e293b;
+      --accent: #6366f1;
+      --accent-light: #a5b4fc;
+      --bg: #f8fafc;
+      --card: #fff;
+      --shadow: 0 4px 24px rgba(30,41,59,0.08);
+    }
+    body {
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 0;
+      color: var(--brand);
+      min-height: 100vh;
+    }
+    .hero {
+      width: 100%;
+      min-height: 340px;
+      background: linear-gradient(120deg, var(--accent-light) 0%, var(--accent) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 16px 40px 16px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .brand {
+      font-size: 2.7rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #fff;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 16px rgba(30,41,59,0.10);
+    }
+    .tagline {
+      font-size: 1.25rem;
+      color: #e0e7ff;
+      font-weight: 500;
+      margin-bottom: 0;
+      text-shadow: 0 2px 8px rgba(30,41,59,0.10);
+    }
+    .scroll-down {
+      margin-top: 40px;
+      color: #fff;
+      font-size: 2rem;
+      animation: bounce 1.5s infinite;
+      opacity: 0.7;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(12px); }
+    }
+    .container {
+      max-width: 420px;
+      margin: 0 auto 40px auto;
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 32px 20px 24px 20px;
+      position: relative;
+      top: -40px;
+      z-index: 2;
+    }
+    .container h1 {
+      display: none;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--brand);
+      letter-spacing: 0.01em;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 18px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #f1f5f9;
+      transition: border 0.2s;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      outline: none;
+      background: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 12px 0;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+      margin-bottom: 0;
+    }
+    button:disabled {
+      background: #c7d2fe;
+      cursor: not-allowed;
+    }
+    .output {
+      margin-top: 24px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 18px;
+      min-height: 60px;
+      font-size: 1rem;
+      color: var(--brand);
+      white-space: pre-wrap;
+      box-shadow: 0 1px 4px rgba(30,41,59,0.04);
+    }
+    .loader {
+      text-align: center;
+      margin-top: 16px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    @media (max-width: 600px) {
+      .container {
+        max-width: 98vw;
+        padding: 18px 4vw 18px 4vw;
+        top: -24px;
+      }
+      .brand {
+        font-size: 2rem;
+      }
+      .tagline {
+        font-size: 1rem;
+      }
+    }
+    html, body {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="brand">Learn With A.I.</div>
+    <div class="tagline">Your AI-powered Practice Question Generator for Smarter Learning</div>
+    <button class="scroll-down" onclick="document.getElementById('main-form').scrollIntoView({behavior: 'smooth'});" aria-label="Scroll to form">&#8595;</button>
+  </div>
+  <div class="container" id="main-form">
+    <form id="questionForm">
+      <label for="topic">Topic</label>
+      <input type="text" id="topic" name="topic" required>
+
+      <label for="subtopic">Subtopic (optional)</label>
+      <input type="text" id="subtopic" name="subtopic">
+
+      <label for="numQuestions">Number of Questions</label>
+      <input type="number" id="numQuestions" name="numQuestions" min="1" max="20" value="5" required>
+
+      <label for="context">Context (optional)</label>
+      <textarea id="context" name="context" rows="3" placeholder="Add any specific context..."></textarea>
+
+      <button type="submit" id="generateBtn">Generate Questions</button>
+    </form>
+    <div class="loader" id="loader" style="display:none;">Generating...</div>
+    <div class="output" id="output"></div>
+    <button id="downloadBtn" style="width:100%;margin-top:10px;display:none;">Download Solutions</button>
+  </div>
+  <script>
+    const form = document.getElementById('questionForm');
+    const output = document.getElementById('output');
+    const loader = document.getElementById('loader');
+    const btn = document.getElementById('generateBtn');
+
+    let lastQuestions = '';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      output.textContent = '';
+      loader.style.display = 'block';
+      btn.disabled = true;
+
+      // Gather form data
+
+      const data = {
+        topic: form.topic.value.trim(),
+        subtopic: form.subtopic.value.trim(),
+        num_questions: form.numQuestions.value,
+        context: form.context.value.trim()
+      };
+
+      // Advanced prompt engineering: build a detailed, instruction-rich prompt matching the system prompt
+      let userPrompt = `You are an expert educator and question generator. Generate ${data.num_questions} practice questions`;
+      userPrompt += ` on the topic: "${data.topic}"`;
+      if (data.subtopic) {
+        userPrompt += `, focusing also on subtopics: "${data.subtopic}"`;
+      }
+      userPrompt += ".";
+      if (data.context) {
+        userPrompt += `\nContext: ${data.context}`;
+      }
+      userPrompt += `\nGuidelines:`;
+      userPrompt += `\n- Return questions in a numbered list.`;
+      userPrompt += `\n- Questions must be relevant to the provided topic${data.subtopic ? ' and subtopics' : ''}.`;
+      userPrompt += `\n- Match the specified difficulty level (Beginner, Intermediate, Advanced) if provided.`;
+      userPrompt += `\n- Use the context to tailor the questions appropriately.`;
+      userPrompt += `\n- Format the output as a numbered list.`;
+      userPrompt += `\n- Do not repeat questions.`;
+      userPrompt += `\n- Do not provide answers.`;
+
+      document.getElementById('downloadBtn').style.display = 'none';
+      try {
+        // Use absolute URL for FastAPI backend if needed
+        const res = await fetch('http://localhost:8000/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: userPrompt })
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          output.textContent = result.error ? `Error: ${result.error}` : 'Failed to generate questions';
+        } else {
+          const questionsText = result.questions || result.response || 'No questions generated.';
+          output.textContent = questionsText;
+          lastQuestions = questionsText;
+          document.getElementById('downloadBtn').style.display = 'block';
+        }
+      } catch (err) {
+        output.textContent = 'Error: ' + err.message;
+      } finally {
+        loader.style.display = 'none';
+        btn.disabled = false;
+      }
+    });
+
+    // Download solutions button logic
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      if (!lastQuestions) return;
+      loader.style.display = 'block';
+      btn.disabled = true;
+      try {
+        const res = await fetch('http://localhost:8000/api/solutions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ questions: lastQuestions })
+        });
+        if (!res.ok) {
+          output.textContent = 'Failed to generate solutions file.';
+        } else {
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'solutions.txt';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        }
+      } catch (err) {
+        output.textContent = 'Error: ' + err.message;
+      } finally {
+        loader.style.display = 'none';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
