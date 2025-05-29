@@ -257,7 +257,13 @@
           body: JSON.stringify({ questions: lastQuestions })
         });
         if (!res.ok) {
-          output.textContent = 'Failed to generate solutions file.';
+          // Try to parse error message from backend
+          let errMsg = 'Failed to generate solutions file.';
+          try {
+            const errJson = await res.json();
+            if (errJson && errJson.error) errMsg = 'Error: ' + errJson.error;
+          } catch {}
+          output.textContent = errMsg;
         } else {
           const blob = await res.blob();
           const url = window.URL.createObjectURL(blob);
