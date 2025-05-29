@@ -223,7 +223,7 @@
       document.getElementById('downloadBtn').style.display = 'none';
       try {
         // Use absolute URL for FastAPI backend if needed
-        const res = await fetch('http://localhost:8000/api/generate', {
+        const res = await fetch('https://ai-ques-gen-render.onrender.com/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt: userPrompt })
@@ -251,7 +251,7 @@
       loader.style.display = 'block';
       btn.disabled = true;
       try {
-        const res = await fetch('http://localhost:8000/api/solutions', {
+        const res = await fetch('https://ai-ques-gen-render.onrender.com/api/solutions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ questions: lastQuestions })
